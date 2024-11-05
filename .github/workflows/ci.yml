@@ -32,7 +32,7 @@ jobs:
 
       # set vars
       - name: set vars
-        uses: ./github/actions/set_vars
+        uses: ./.github/actions/set_vars
         with:
           clean_build: ${{ github.event.inputs.clean_build }}
 
