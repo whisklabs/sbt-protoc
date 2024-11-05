@@ -1,0 +1,57 @@
+name: set-ci-vars
+description: 'set ci vars.'
+author: 'Dmitry Muzyka'
+inputs:
+  clean_build:
+    description: 'build all'
+    required: false
+    default: "false"
+runs:
+  using: 'composite'
+  steps:
+    - name: "set git config"
+      shell: bash
+      run: |
+        git config --global --add safe.directory "$(pwd)"
+        git fetch origin master
+        git describe --tags --abbrev=0 --first-parent
+
+    # set vars
+    - name: set branch
+      shell: bash
+      run: |
+        branch="$(echo -n ${{ github.event.ref }} | sed 's#refs/heads/##g; s#/#-#g' | tr '[:upper:]' '[:lower:]')"
+        echo "branch=\"${branch}\"" >> $GITHUB_ENV
+
+    - name: set new version
+      shell: bash
+      run: |
+        if [[ ${{env.branch}} == "master" ]]; then
+            version="$(date +'%Y.%m.%d')-${{github.run_number}}"
+        else
+          version="$(date +'%Y.%m.%d')-${branch}-${{github.run_number}}"
+        fi
+        version=$(echo $version | sed 's/"//g')
+        echo "version=$version"
+        echo "version=$version" >> $GITHUB_ENV
+
+    - name: Set LAST_COMPLETED_JOB_SHA1
+      shell: bash
+      run: |
+          if [[ '${{ inputs.clean_build }}' == 'true' ]]; then
+              echo "clean build, will bundle & test all"
+              echo "LAST_COMPLETED_JOB_SHA1=None" >> $GITHUB_ENV
+          else
+            .github/helpers/set-last-completed-job-sha1.sh
+          fi
+
+    - name: print debug info
+      shell: bash
+      run: |
+          echo "previous successful build sha: ${LAST_COMPLETED_JOB_SHA1}"
+          echo "previous successful version: $(git tag --points-at ${LAST_COMPLETED_JOB_SHA1})"
+          echo "latest cache sha: ${LATEST_CACHE_SHA1}"
+          echo "branch: ${branch}"
+          echo "version: ${version}"
+
+    # /set vars
