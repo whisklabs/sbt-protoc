@@ -1,0 +1,44 @@
+name: save-sbt-cache
+description: 'cache sbt deps and compiled classes'
+author: 'Dmitry Muzyka'
+inputs:
+  clean_build:
+    description: 'build all'
+    required: false
+    default: "false"
+runs:
+  using: 'composite'
+  steps:
+    - name: Build cache directory
+      shell: bash
+      run: |
+        targets=$(git clean -ndx | cut -c14- | grep /$ | grep -E -v '(build_cache|persist|test_results)')
+        tar -cf build_cache/targets.tar --exclude=*/target/test-reports/*.xml --exclude=*.log --exclude=*/target/scoverage-report --exclude=*/target/coverage-report --exclude=project/target/active.json $targets || :
+
+    - name: Make cache key file
+      shell: bash
+      run: |
+          echo "${GITHUB_SHA}" > current.sha1
+          date +%Y-%m > current_month
+
+    - name: check if compilation cache exists
+      id: check-compilation-cache
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          build_cache
+        key: v2-build-cache-${{ github.job }}-${{ hashFiles('current_month') }}-${{ hashFiles('current.sha1') }}
+        lookup-only: 'true'
+
+    - name: Save compilation cache
+      if: steps.check-compilation-cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          build_cache
+        key: v2-build-cache-${{ github.job }}-${{ hashFiles('current_month') }}-${{ hashFiles('current.sha1') }}
+
+    - name: Clean up
+      shell: bash
+      run: rm -rf build_cache current.sha1
+    # / save sbt cache
