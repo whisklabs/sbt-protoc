@@ -32,7 +32,7 @@ jobs:
 
       # set vars
       - name: set vars
-        uses: whisklabs/gha-workflows/actions/set_vars@master
+        uses: ./github/actions/set_vars
         with:
           clean_build: ${{ github.event.inputs.clean_build }}
 
@@ -43,7 +43,7 @@ jobs:
           distribution: 'temurin'
 
       - name: restore cache
-        uses: whisklabs/gha-workflows/actions/scala_restore_cache@master
+        uses: ./.github/actions/scala_restore_cache
         with:
           clean_build: ${{ github.event.inputs.clean_build }}
 
@@ -76,5 +76,5 @@ jobs:
       - name: label vcs
         run: git tag $version && git push --tag
       - name: Save Scala Cache
-        uses: whisklabs/gha-workflows/actions/scala_save_cache@master
+        uses: ./.github/actions/scala_save_cache
 

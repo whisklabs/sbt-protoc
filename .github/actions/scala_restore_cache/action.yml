@@ -1,0 +1,50 @@
+name: restore-sbt-cache
+description: 'cache sbt deps and compiled classes'
+author: 'Dmitry Muzyka'
+inputs:
+  clean_build:
+    description: 'build all'
+    required: false
+    default: "false"
+runs:
+  using: 'composite'
+  steps:
+    - name: Make cache key files
+      shell: bash
+      run: |
+        echo "${LAST_COMPLETED_JOB_SHA1}" > last-completed-job.sha1
+        echo "${GITHUB_SHA}" > current.sha1
+        echo "${LATEST_CACHE_SHA1}" > latest-maybe-failed.sha1
+        date +%Y-%m > current_month
+
+    - name: Restore compilation cache
+      if: ${{ inputs.clean_build != 'true' }}
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          build_cache
+        key: v2-build-cache-${{ github.job }}-${{ hashFiles('current_month') }}-${{ hashFiles('current.sha1') }}
+        restore-keys: |
+          v2-build-cache-${{ github.job }}-${{ hashFiles('current_month') }}-${{ hashFiles('current.sha1') }}
+          v2-build-cache-${{ github.job }}-${{ hashFiles('current_month') }}-${{ hashFiles('latest-maybe-failed.sha1') }}
+          v2-build-cache-${{ github.job }}-${{ hashFiles('current_month') }}-${{ hashFiles('last-completed-job.sha1') }}
+          v2-build-cache-${{ github.job }}-${{ hashFiles('current_month') }}-
+
+    - name: Apply compilation cache
+      if: ${{ inputs.clean_build != 'true' }}
+      shell: bash
+      run: |
+        RUNNER_TRACKING_ID="" && tar -xf build_cache/targets.tar 2>/dev/null &
+
+    - name: cleanup sbt cache once per month
+      shell: bash
+      run: |
+          mkdir -p ~/.cache
+          test -f ~/.cache/.timecreated || touch ~/.cache/.timecreated
+          if test "$(find  ~/.cache/.timecreated -mtime +30)"; then
+            echo "run cleanup"
+            find ~/.cache ~/.ivy2 -type f -mtime +30 -delete
+            find ~/.cache ~/.ivy2 -type d -empty -delete
+            mkdir -p ~/.cache
+            touch ~/.cache/.timecreated
+          fi
