@@ -1,4 +1,8 @@
+import sbt.Keys.publishMavenStyle
+
 name := "sbt-protoc"
+
+resolvers += "internal.repo.read" at "https://nexus.whisk-dev.com/repository/whisk-maven-group/"
 
 description := "SBT plugin for generating code from Protocol Buffer using protoc"
 
@@ -40,6 +44,15 @@ inThisBuild(
         "thesamet@gmail.com",
         url("https://www.thesamet.com")
       )
-    )
+    ),
+    scmInfo := Some(
+      ScmInfo(
+        url("https://github.com/whisklabs/sbt-protoc"),
+        "scm:git:github.com/whisklabs/sbt-protoc.git"
+      )
+    ),
+    publishMavenStyle := true,
+    credentials += Credentials(Path.userHome / ".m2" / ".credentials"),
+    publishTo := Some("internal.repo" at "https://nexus.whisk-dev.com/repository/whisk-maven2/")
   )
 )
