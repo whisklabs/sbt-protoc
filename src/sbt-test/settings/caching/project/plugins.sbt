@@ -5,7 +5,7 @@
       """|The system property 'plugin.version' is not defined.
          |Specify this property using the scriptedLaunchOpts -D.""".stripMargin
     )
-  else addSbtPlugin("com.thesamet" % "sbt-protoc" % pluginVersion)
+  else addSbtPlugin("com.whisk" % "sbt-protoc" % pluginVersion)
 }
 
 libraryDependencies += "com.thesamet.scalapb" %% "compilerplugin" % "0.10.9"
