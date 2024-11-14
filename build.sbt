@@ -29,7 +29,7 @@ pluginCrossBuild / sbtVersion := "1.2.8"
 
 inThisBuild(
   List(
-    organization := "com.thesamet",
+    organization := "com.whisk",
     homepage     := Some(url("https://github.com/thesamet/sbt-protoc")),
     licenses := List(
       "Apache-2.0" ->
