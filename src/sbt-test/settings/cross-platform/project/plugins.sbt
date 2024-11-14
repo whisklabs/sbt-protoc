@@ -5,7 +5,7 @@
       """|The system property 'plugin.version' is not defined.
          |Specify this property using the scriptedLaunchOpts -D.""".stripMargin
     )
-  else addSbtPlugin("com.thesamet" % "sbt-protoc" % pluginVersion)
+  else addSbtPlugin("com.whisk" % "sbt-protoc" % pluginVersion)
 }
 
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject"      % "0.6.0")

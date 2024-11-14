@@ -1,4 +1,4 @@
-addSbtPlugin("com.thesamet" % "sbt-protoc" % "1.0.0-RC4")
+addSbtPlugin("com.whisk" % "sbt-protoc" % "1.0.0-RC4")
 
 addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.4.6")
 
