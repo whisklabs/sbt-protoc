@@ -624,7 +624,6 @@ object ProtocPlugin extends AutoPlugin {
                 def stampClasspath(files: Seq[File]) =
                   // artifact paths can be JARs or directories, so a recursive stamp is needed
                   FileInfo.hash(files.toSet[File].allPaths.get().toSet)
-
                 if (prevValue == null) {
                   // first time this classpath is requested since the start of sbt
                   val resolved = resolver(artifact)
