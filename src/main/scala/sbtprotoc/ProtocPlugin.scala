@@ -292,7 +292,7 @@ object ProtocPlugin extends AutoPlugin {
             s"""PB.protocVersion must contain a dot-separated version number. For example: "3.13.0". Got: '${PB.protocVersion.value}'"""
           )
         }
-        ("com.google.protobuf" % "protoc" % version) asProtocBinary (),
+        ("com.google.protobuf" % "protoc" % version) asProtocBinary ()
       },
       PB.protocExecutable := {
         scala.concurrent.Await.result(
@@ -465,7 +465,7 @@ object ProtocPlugin extends AutoPlugin {
 
       targets.flatMap {
         case Target(DescriptorSetGenerator(), outputFile, _) => Seq(outputFile)
-        case Target(_, outputDirectory, _)                   => outputDirectory.allPaths.get
+        case Target(_, outputDirectory, _)                   => outputDirectory.allPaths.get()
       }.toSet
     } else if (schemas.nonEmpty && targets.isEmpty) {
       log.info("Protobufs files found, but PB.targets is empty.")
@@ -552,7 +552,8 @@ object ProtocPlugin extends AutoPlugin {
     sources
       .toSet[File]
       .flatMap(srcDir =>
-        (srcDir ** (toInclude -- toExclude)).get
+        (srcDir ** (toInclude -- toExclude))
+          .get()
           .map(_.getAbsoluteFile)
       ) match {
       case protos if protos.nonEmpty =>
@@ -622,8 +623,7 @@ object ProtocPlugin extends AutoPlugin {
               { (_, prevValue) =>
                 def stampClasspath(files: Seq[File]) =
                   // artifact paths can be JARs or directories, so a recursive stamp is needed
-                  FileInfo.hash(files.toSet[File].allPaths.get.toSet)
-
+                  FileInfo.hash(files.toSet[File].allPaths.get().toSet)
                 if (prevValue == null) {
                   // first time this classpath is requested since the start of sbt
                   val resolved = resolver(artifact)
@@ -711,7 +711,7 @@ object ProtocPlugin extends AutoPlugin {
         val sandboxedArtifactsStamps =
           stampedClassLoadersByArtifact.values.map(_._1).toSeq
         val inputStamp =
-          FileInfo.hash(schemas ++ arguments.includePaths.allPaths.get)
+          FileInfo.hash(schemas ++ arguments.includePaths.allPaths.get())
         cachedCompile((arguments, sandboxedArtifactsStamps :+ inputStamp)).toSeq
       }
     }

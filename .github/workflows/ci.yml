@@ -41,6 +41,8 @@ jobs:
           java-version: "21"
           distribution: 'temurin'
 
+      - uses: sbt/setup-sbt@v1
+
       - name: restore cache
         uses: ./.github/actions/scala_restore_cache
         with:

@@ -1,7 +1,5 @@
 sbt-protoc
 ==========
-[![CI](https://github.com/thesamet/sbt-protoc/workflows/CI/badge.svg)](https://github.com/thesamet/sbt-protoc/actions?query=workflow%3ACI)
-
 This plugin uses protoc to generate code from proto files. This SBT plugin is
 meant to supersede
 [sbt-protobuf](https://github.com/sbt/sbt-protobuf/) and
