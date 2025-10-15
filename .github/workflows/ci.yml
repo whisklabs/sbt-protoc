@@ -23,7 +23,7 @@ jobs:
       JVM_OPTS:  -XX:MinRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0 -Xss6M -XX:ReservedCodeCacheSize=256M -Dfile.encoding=UTF-8
     steps:
       - id: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 100
           fetch-tags: true

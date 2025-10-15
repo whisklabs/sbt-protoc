@@ -15,7 +15,7 @@ scalaVersion := "2.12.20"
 addSbtPlugin("org.portable-scala" % "sbt-platform-deps" % "1.0.1")
 
 libraryDependencies ++= Seq(
-  "com.thesamet.scalapb" %% "protoc-bridge" % "0.9.7"
+  "com.thesamet.scalapb" %% "protoc-bridge" % "0.9.9"
 )
 
 enablePlugins(SbtPlugin)
@@ -31,7 +31,7 @@ inThisBuild(
   List(
     organization := "com.whisk",
     homepage     := Some(url("https://github.com/thesamet/sbt-protoc")),
-    licenses := List(
+    licenses     := List(
       "Apache-2.0" ->
         url("http://www.apache.org/licenses/LICENSE-2.0")
     ),
