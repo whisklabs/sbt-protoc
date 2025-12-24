@@ -491,7 +491,7 @@ object ProtocPlugin extends AutoPlugin {
     def cachedExtractDep(dep: File): Seq[File] = {
       val cached = FileFunction.cached(
         streams.cacheDirectory / dep.name,
-        inStyle = FilesInfo.lastModified,
+        inStyle = FilesInfo.hash,
         outStyle = FilesInfo.hash
       ) { deps =>
         IO.createDirectory(extractTarget)
